@@ -11,10 +11,9 @@ const getAllEvents = async (req, res, next) => {
 					}
 				}
 			]
-		}).populate(
-			{ path: "creator", select: "name" },
-			{ path: "attendees", select: "name" }
-		);
+		})
+			.populate({ path: "creator", select: "username" })
+			.populate({ path: "attendees", select: "username" });
 		if (events.length > 0) {
 			res.status(200).json(events);
 		} else {
@@ -44,10 +43,8 @@ const getPaginatedEvents = async (req, res, next) => {
 		})
 			.limit(limit)
 			.skip(startIndex)
-			.populate(
-				{ path: "creator", select: "name" },
-				{ path: "attendees", select: "name" }
-			);
+			.populate({ path: "creator", select: "username" })
+			.populate({ path: "attendees", select: "username" });
 		if (events.length > 0) {
 			res.status(200).json(events);
 		} else {
@@ -84,10 +81,8 @@ const getSortedEvents = async (req, res, next) => {
 			]
 		})
 			.sort({ [sort]: 1 })
-			.populate(
-				{ path: "creator", select: "name" },
-				{ path: "attendees", select: "name" }
-			);
+			.populate({ path: "creator", select: "username" })
+			.populate({ path: "attendees", select: "username" });
 		if (events.length > 0) {
 			res.status(200).json(events);
 		} else {
@@ -115,10 +110,9 @@ const getSearchedEvent = async (req, res, next) => {
 			title: {
 				$regex: regex
 			}
-		}).populate(
-			{ path: "creator", select: "name" },
-			{ path: "attendees", select: "name" }
-		);
+		})
+			.populate({ path: "creator", select: "username" })
+			.populate({ path: "attendees", select: "username" });
 		if (events.length > 0) {
 			res.status(200).json(events);
 		} else {
@@ -146,10 +140,9 @@ const dateFilteredEvents = async (req, res, next) => {
 				$gte: startDate,
 				$lte: endDate
 			}
-		}).populate(
-			{ path: "creator", select: "name" },
-			{ path: "attendees", select: "name" }
-		);
+		})
+			.populate({ path: "creator", select: "username" })
+			.populate({ path: "attendees", select: "username" });
 		if (events.length > 0) {
 			res.status(200).json(events);
 		} else {
