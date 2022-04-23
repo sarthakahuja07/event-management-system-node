@@ -26,4 +26,5 @@ router.route("/date-filter").get(verifyToken,dateFilteredEvents);
 router.route("/:id").get(verifyToken,getEventById).put(verifyToken,updateEventById);
 router.route("/:id/invite").post(verifyToken,inviteAttendee);
 
+
 module.exports = router;
