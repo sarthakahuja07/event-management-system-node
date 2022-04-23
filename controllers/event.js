@@ -11,14 +11,17 @@ const getAllEvents = async (req, res, next) => {
 					}
 				}
 			]
-		});
+		}).populate(
+			{ path: "creator", select: "name" },
+			{ path: "attendees", select: "name" }
+		);
 		if (events.length > 0) {
 			res.status(200).json(events);
 		} else {
 			res.status(404).json({ message: "No events found" });
 		}
-	} catch(err) {
-        console.log(err);
+	} catch (err) {
+		console.log(err);
 		res.status(500).json({ message: "Server error" });
 	}
 };
@@ -40,20 +43,24 @@ const getPaginatedEvents = async (req, res, next) => {
 			]
 		})
 			.limit(limit)
-			.skip(startIndex);
+			.skip(startIndex)
+			.populate(
+				{ path: "creator", select: "name" },
+				{ path: "attendees", select: "name" }
+			);
 		if (events.length > 0) {
 			res.status(200).json(events);
 		} else {
 			res.status(404).json({ message: "No events found" });
 		}
-	} catch(err) {
-        console.log(err);
+	} catch (err) {
+		console.log(err);
 		res.status(500).json({ message: "Server error" });
 	}
 };
 
 const createEvent = async (req, res, next) => {
-	const Event = new Events({...req.body, creator: req.user.id});
+	const Event = new Events({ ...req.body, creator: req.user.id });
 	try {
 		const newEvent = await Event.save();
 		res.status(201).json(newEvent);
@@ -75,7 +82,12 @@ const getSortedEvents = async (req, res, next) => {
 					}
 				}
 			]
-		}).sort({ [sort]: 1 });
+		})
+			.sort({ [sort]: 1 })
+			.populate(
+				{ path: "creator", select: "name" },
+				{ path: "attendees", select: "name" }
+			);
 		if (events.length > 0) {
 			res.status(200).json(events);
 		} else {
@@ -103,7 +115,10 @@ const getSearchedEvent = async (req, res, next) => {
 			title: {
 				$regex: regex
 			}
-		});
+		}).populate(
+			{ path: "creator", select: "name" },
+			{ path: "attendees", select: "name" }
+		);
 		if (events.length > 0) {
 			res.status(200).json(events);
 		} else {
@@ -131,7 +146,10 @@ const dateFilteredEvents = async (req, res, next) => {
 				$gte: startDate,
 				$lte: endDate
 			}
-		});
+		}).populate(
+			{ path: "creator", select: "name" },
+			{ path: "attendees", select: "name" }
+		);
 		if (events.length > 0) {
 			res.status(200).json(events);
 		} else {
@@ -145,7 +163,10 @@ const dateFilteredEvents = async (req, res, next) => {
 const getEventById = async (req, res, next) => {
 	const id = req.params.id;
 	try {
-		const event = await Events.findById(id);
+		const event = await Events.findById(id).populate(
+			{ path: "creator", select: "name" },
+			{ path: "attendees", select: "name" }
+		);
 
 		if (event) {
 			res.status(200).json(event);
@@ -167,8 +188,8 @@ const updateEventById = async (req, res, next) => {
 	try {
 		const updatedEvent = await Events.findByIdAndUpdate(
 			req.params.id,
-            { $set: req.body },
-			{new: true}
+			{ $set: req.body },
+			{ new: true }
 		);
 		res.status(200).json(updatedEvent);
 	} catch {
