@@ -156,10 +156,15 @@ const dateFilteredEvents = async (req, res, next) => {
 const getEventById = async (req, res, next) => {
 	const id = req.params.id;
 	try {
-		const event = await Events.findById(id).populate(
-			{ path: "creator", select: "name" },
-			{ path: "attendees", select: "name" }
-		);
+		const event = await Events.findById(id)
+			.populate({
+				path: "creator",
+				select: "username"
+			})
+			.populate({
+				path: "attendees",
+				select: "username"
+			});
 
 		if (event) {
 			res.status(200).json(event);
